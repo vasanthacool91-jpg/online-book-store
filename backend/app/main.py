@@ -27,6 +27,11 @@ app.include_router(book_router)
 app.include_router(wishlist_router)
 app.include_router(cart_router)
 
+@app.get("/version")
+def version():
+    return {
+        "version": "v2-cors-test"
+    }
 @app.get("/")
 def home():
     return {"message": "Online Book Store API"}
