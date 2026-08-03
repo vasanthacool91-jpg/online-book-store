@@ -1,6 +1,5 @@
 from sqlmodel import SQLModel, create_engine, Session
-
-DATABASE_URL = "sqlite:///bookstore.db"
+from app.config import DATABASE_URL
 
 engine = create_engine(
     DATABASE_URL,

@@ -1,9 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException
-from sqlmodel import Session, select
+from fastapi import APIRouter, Depends
+from sqlmodel import Session
 
 from app.database import get_session
-from app.models import Cart
 from app.schemas import CartCreate
+from app.services import cart_service
 
 router = APIRouter(
     prefix="/cart",
@@ -13,52 +13,19 @@ router = APIRouter(
 
 @router.post("/")
 def add_to_cart(cart: CartCreate, session: Session = Depends(get_session)):
-    db_cart = Cart(**cart.model_dump())
+    return cart_service.add_to_cart(cart, session)
 
-    session.add(db_cart)
-    session.commit()
-    session.refresh(db_cart)
-
-    return db_cart
 
 @router.get("/{user_id}")
 def get_cart(user_id: int, session: Session = Depends(get_session)):
-    return session.exec(
-        select(Cart).where(Cart.user_id == user_id)
-    ).all()
+    return cart_service.get_cart(user_id, session)
 
 
 @router.put("/{cart_id}")
-def update_cart(
-    cart_id: int,
-    quantity: int,
-    session: Session = Depends(get_session)
-):
-    cart = session.get(Cart, cart_id)
-
-    if not cart:
-        raise HTTPException(status_code=404, detail="Cart not found")
-
-    cart.quantity = quantity
-
-    session.add(cart)
-    session.commit()
-    session.refresh(cart)
-
-    return cart
-
+def update_cart(cart_id: int, quantity: int, session: Session = Depends(get_session)):
+    return cart_service.update_cart(cart_id, quantity, session)
 
 
 @router.delete("/{cart_id}")
 def delete_cart(cart_id: int, session: Session = Depends(get_session)):
-    cart = session.get(Cart, cart_id)
-
-    if not cart:
-        raise HTTPException(status_code=404, detail="Cart not found")
-
-    session.delete(cart)
-    session.commit()
-
-    return {
-        "message": "Item removed from cart"
-    }
+    return cart_service.delete_cart(cart_id, session)

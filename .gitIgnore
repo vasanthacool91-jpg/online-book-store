@@ -24,6 +24,12 @@ env/
 .env.*
 !.env.example
 
+
+_pycache_/
+*.pyc
+bookstore.db
+
+
 ##################################
 # Next.js
 ##################################
@@ -66,3 +72,6 @@ build/
 
 coverage/
 *.log
+
+
+

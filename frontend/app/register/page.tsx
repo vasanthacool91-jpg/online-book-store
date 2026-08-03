@@ -2,21 +2,25 @@
 
 import { useState } from "react";
 import api from "../lib/api";
-
+import { useRouter } from "next/navigation";
 export default function RegisterPage() {
   const [form, setForm] = useState({
     name: "",
     email: "",
     password: "",
   });
-
+ const router = useRouter();
   const register = async () => {
     try {
+       
+      
       const res = await api.post("/auth/register", form);
       alert("Registration Successful");
       console.log(res.data);
       router.push("/login");
     } catch (err: any) {
+      console.log(err,'hvdhahdhjdvajv');
+      
       alert(err.response?.data?.detail || "Registration Failed");
     }
   };
